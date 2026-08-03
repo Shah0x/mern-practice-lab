@@ -1,0 +1,103 @@
+/* TODO: Define actual palette variables in :root. Currently hardcoded in some places. */
+:root {
+  --primary-color: #3b82f6;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --bg-card: #ffffff;
+  --border-radius: 12px;
+  --transition-speed: 0.25s;
+}
+
+/* Reset/Base just for this component's scope */
+.card-grid-container {
+  box-sizing: border-box;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.card-grid {
+  display: grid;
+  /* auto-fit is perfect here, minmax prevents blowout on small screens */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  
+  /* Refactor note: Should we use flexbox fallback for older browsers? 
+     Probably not needed in 2024, but keeping an eye on older iOS Safari */
+}
+
+.custom-card {
+  background-color: var(--bg-card);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%; /* Make them equal height in the grid row */
+}
+
+/* Hover effect - keeping it subtle */
+.custom-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Commented out this experimental scale effect - felt too laggy on mobile */
+/*
+.custom-card:active {
+  transform: scale(0.98);
+}
+*/
+
+.card-header {
+  margin-bottom: 1rem;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 0.5rem 0;
+}
+
+.card-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: #eff6ff; /* Temporary, need to make this a variable */
+  color: var(--primary-color);
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 9999px;
+}
+
+.card-body {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  flex-grow: 1; /* Pushes footer to the bottom */
+  margin-bottom: 1.5rem;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #f3f4f6; /* TODO: replace with CSS variable */
+  padding-top: 1rem;
+}
+
+/* Quick helper utility to test alignment */
+/* .debug-border { border: 1px solid red; } */
+
+@media (max-width: 480px) {
+  .card-grid {
+    grid-template-columns: 1fr; /* Force single column on tiny screens */
+    gap: 1rem;
+  }
+  
+  .custom-card {
+    padding: 1.2rem; /* Save a bit of screen estate */
+  }
+}
