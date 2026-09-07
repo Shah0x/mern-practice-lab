@@ -1,0 +1,128 @@
+/* TODO: Move these to a global theme file once we set up PostCSS/Sass */
+:root {
+  --sidebar-width: 260px;
+  --header-height: 64px;
+  --primary-color: #4f46e5;
+  --bg-dark: #0f172a;
+  --bg-light: #f8fafc;
+  --border-color: #e2e8f0;
+  --gap-md: 1.5rem;
+}
+
+/* Quick reset for this practice layout */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-light);
+  color: #334155;
+  /* Temp hack for mobile Safari 100vh address bar jumping */
+  min-height: -webkit-fill-available;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Main Layout Wrapper using Grid */
+.app-layout {
+  display: grid;
+  grid-template-areas:
+    "sidebar header"
+    "sidebar main";
+  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-rows: var(--header-height) 1fr;
+  height: 100vh;
+}
+
+/* Sticky Header */
+.app-header {
+  grid-area: header;
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--gap-md);
+  /* border: 2px solid red; -- DEBUG */
+}
+
+/* Sidebar Navigation */
+.app-sidebar {
+  grid-area: sidebar;
+  background-color: var(--bg-dark);
+  color: #ffffff;
+  padding: var(--gap-md);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  /* Ensure overflow is scrollable if menu items grow */
+  overflow-y: auto;
+}
+
+/* TODO: Stylize scrollbar for webkit later, default scrollbar is ugly on Windows */
+.app-sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar-brand {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: var(--primary-color);
+}
+
+/* Scrollable Main Content Area */
+.app-main {
+  grid-area: main;
+  padding: var(--gap-md);
+  overflow-y: auto;
+  background-color: var(--bg-light);
+}
+
+/* Responsive Grid for Dashboard Cards */
+.dashboard-grid {
+  display: grid;
+  /* auto-fit dynamic wrapping, no media queries needed for column sizing */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--gap-md);
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Simple hover effect - might need to disable on touch screen devices */
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Media Query for Tablet/Mobile */
+@media (max-width: 768px) {
+  .app-layout {
+    grid-template-areas:
+      "header"
+      "main";
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--header-height) 1fr;
+  }
+
+  .app-sidebar {
+    /* Hide sidebar by default on mobile. 
+       FIXME: Need to implement JS toggle class '.sidebar-open' to overlay this */
+    display: none;
+  }
+  
+  .dashboard-grid {
+    /* Fallback to single column on small displays */
+    grid-template-columns: 1fr;
+  }
+}
