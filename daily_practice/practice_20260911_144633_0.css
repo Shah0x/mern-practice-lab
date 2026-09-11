@@ -1,0 +1,119 @@
+:root {
+  --primary-color: #4f46e5;
+  --bg-main: #f9fafb;
+  --bg-sidebar: #1f2937;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --sidebar-width: 240px;
+  --header-height: 60px;
+  /* FIXME: Need a dark mode media query eventually, variables are too hardcoded right now */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Dashboard Wrapper Grid */
+.dashboard-container {
+  display: grid;
+  grid-template-areas:
+    "sidebar header"
+    "sidebar main";
+  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-rows: var(--header-height) 1fr;
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Sidebar Styling */
+.dashboard-sidebar {
+  grid-area: sidebar;
+  background-color: var(--bg-sidebar);
+  color: #ffffff;
+  padding: 1.5rem;
+  /* border: 2px dashed #f43f5e; -- debug grid alignment */
+}
+
+/* Sticky Header */
+.dashboard-header {
+  grid-area: header;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 10; /* NOTE: Changed from 9999 because it was breaking the modal overlays */
+}
+
+/* Main Content Area */
+.dashboard-content {
+  grid-area: main;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* Auto-fitting Grid for Cards */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+/* Card Component */
+.card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  /* Flexbox fallback until subgrid is 100% safe for our target audience */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 180px;
+}
+
+/* TODO: Implement grid-template-rows: subgrid; for cards once QA approves browser support list */
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.card-body {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  flex-grow: 1;
+}
+
+/* Quick Responsive Tweak for Mobile Devices */
+@media (max-width: 768px) {
+  .dashboard-container {
+    grid-template-areas:
+      "header"
+      "main";
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--header-height) 1fr;
+  }
+
+  .dashboard-sidebar {
+    display: none; /* TODO: Re-write as mobile side-drawer menu using JS toggle */
+  }
+}
