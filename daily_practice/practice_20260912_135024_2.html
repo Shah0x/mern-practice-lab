@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Card Filter</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f7;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --primary-color: #4f46e5;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .controls {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .search-input {
+            padding: 0.75rem 1rem;
+            width: 100%;
+            max-width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        /* Hacky margin fix because of weird wrapper behavior, need to refactor grid gap later */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 10px; 
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e0e7ff;
+            color: var(--primary-color);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Project Dashboard</h1>
+        
+        <div class="controls">
+            <!-- TODO: Accessibility - add aria-live region for search results -->
+            <input type="text" id="search" class="search-input" placeholder="Search by title or tag..." />
+        </div>
+
+        <div class="card-grid" id="grid">
+            <div class="card" data-tags="javascript frontend">
+                <h3>Alpine.js Setup</h3>
+                <p>Configuring a lightweight reactive wrapper for legacy HTML templates.</p>
+                <span class="tag">javascript</span>
+            </div>
+            <div class="card" data-tags="css design">
+                <h3>CSS Grid Tricks</h3>
+                <p>Using auto-fill and minmax to build robust fluid layouts without media queries.</p>
+                <span class="tag">css</span>
+            </div>
+            <div class="card" data-tags="backend node">
+                <h3>Express Boilerplate</h3>
+                <p>Minimalist API starter kit with JWT authentication and structured routing.</p>
+                <span class="tag">backend</span>
+            </div>
+            <div class="card" data-tags="css layout">
+                <h3>Flexbox Alignments</h3>
+                <p>Deep dive into justify-content and align-items edge cases.</p>
+                <span class="tag">css</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('search');
+        const cards = document.querySelectorAll('.card');
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            
+            // Commented-out debug log
+            // console.log('Filtering for query:', query);
+
+            cards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const tags = card.getAttribute('data-tags').toLowerCase();
+                const content = card.querySelector('p').textContent.toLowerCase();
+
+                // Simple check, maybe change to regex matching later?
+                const isMatch = title.includes(query) || tags.includes(query) || content.includes(query);
+
+                if (isMatch) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        });
+
+        // Quick self-note: Edge case when search input is cleared via browser dynamic reload
+        // Need to trigger input handler on DOMContentLoaded just in case.
+        window.addEventListener('DOMContentLoaded', () => {
+            if (searchInput.value) {
+                searchInput.dispatchEvent(new Event('input'));
+            }
+        });
+    </script>
+</body>
+</html>
