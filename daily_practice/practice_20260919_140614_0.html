@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Practice: Simple Tabs</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --gray-200: #e5e7eb;
+            --gray-700: #374151;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 2rem;
+            background-color: #f9fafb;
+        }
+
+        .tabs-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .tab-list {
+            display: flex;
+            border-bottom: 2px solid var(--gray-200);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .tab-trigger {
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            color: var(--gray-700);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px; /* overlap border */
+            transition: all 0.2s ease;
+        }
+
+        .tab-trigger:hover {
+            color: var(--primary-color);
+        }
+
+        .tab-trigger.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.15s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(2px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="tabs-container">
+    <!-- TODO: Add proper ARIA roles (tablist, tab, tabpanel) for better accessibility -->
+    <div class="tab-list" role="tablist">
+        <button class="tab-trigger active" data-target="tab-1">Profile</button>
+        <button class="tab-trigger" data-target="tab-2">Settings</button>
+        <button class="tab-trigger" data-target="tab-3">Notifications</button>
+    </div>
+
+    <div id="tab-1" class="tab-content active">
+        <h3>Profile Settings</h3>
+        <p>Manage your public profile info and email addresses here.</p>
+    </div>
+    
+    <div id="tab-2" class="tab-content">
+        <h3>Account Settings</h3>
+        <p>Configure your security preferences, password, and active sessions.</p>
+    </div>
+
+    <div id="tab-3" class="tab-content">
+        <h3>Notifications</h3>
+        <p>Choose when and how you want to be alerted of new updates.</p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const triggers = document.querySelectorAll('.tab-trigger');
+        const contents = document.querySelectorAll('.tab-content');
+
+        triggers.forEach(trigger => {
+            trigger.addEventListener('click', (e) => {
+                const targetId = trigger.getAttribute('data-target');
+                
+                // debug log, remove in prod
+                // console.log('switching to tab:', targetId);
+
+                // Deactivate all
+                triggers.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+
+                // Activate selected
+                trigger.classList.add('active');
+                const targetContent = document.getElementById(targetId);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                } else {
+                    console.warn(`Tab content target not found: ${targetId}`);
+                }
+            });
+        });
+
+        // TODO: Implement arrow-key keyboard navigation inside .tab-list
+    });
+</script>
+</body>
+</html>
